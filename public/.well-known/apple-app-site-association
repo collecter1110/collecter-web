@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "6AW4DY5F93.kr.collecter.app"
+        ],
+        "components": [
+          {
+            "/": "/c/*",
+            "comment": "컬렉션 및 셀렉션 공유 페이지"
+          }
+        ]
+      }
+    ]
+  }
+}

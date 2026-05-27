@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getPublicSelectionDetail } from "@/lib/api";
 import ImageCarousel from "@/components/ImageCarousel";
+import OpenInApp from "@/components/OpenInApp";
 
 type Params = { params: Promise<{ id: string; sid: string }> };
 
@@ -141,12 +142,9 @@ export default async function SelectionDetailPage({ params }: Params) {
       </section>
 
       <div className="fixed bottom-0 inset-x-0 p-4 bg-gradient-to-t from-white via-white to-white/0">
-        <a
-          href={`${scheme}://c/${collectionId}/s/${selectionId}`}
-          className="block w-full max-w-md mx-auto py-3 rounded-xl bg-black text-white text-center text-sm font-medium"
-        >
-          앱에서 열기
-        </a>
+        <OpenInApp
+          schemeUrl={`${scheme}://c/${collectionId}/s/${selectionId}`}
+        />
       </div>
     </main>
   );

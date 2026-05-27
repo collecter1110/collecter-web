@@ -6,6 +6,7 @@ import {
   getPublicCollection,
   getPublicSelections,
 } from "@/lib/api";
+import OpenInApp from "@/components/OpenInApp";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -140,12 +141,9 @@ export default async function CollectionPage({ params }: Params) {
       </section>
 
       <div className="fixed bottom-0 inset-x-0 p-4 bg-gradient-to-t from-white via-white to-white/0">
-        <a
-          href={`${process.env.NEXT_PUBLIC_APP_SCHEME ?? "collecterapp"}://c/${collectionId}`}
-          className="block w-full max-w-md mx-auto py-3 rounded-xl bg-black text-white text-center text-sm font-medium"
-        >
-          앱에서 열기
-        </a>
+        <OpenInApp
+          schemeUrl={`${process.env.NEXT_PUBLIC_APP_SCHEME ?? "collecterapp"}://c/${collectionId}`}
+        />
       </div>
     </main>
   );

@@ -9,6 +9,16 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: imageHost },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: "/.well-known/apple-app-site-association",
+        headers: [
+          { key: "Content-Type", value: "application/json" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
