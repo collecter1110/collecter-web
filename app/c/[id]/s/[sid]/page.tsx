@@ -44,29 +44,63 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-function renderItems(items: unknown): React.ReactNode {
+function getItemText(item: unknown): string {
+  if (typeof item === "string") return item;
+  if (item && typeof item === "object") {
+    const obj = item as Record<string, unknown>;
+    if (typeof obj.item_title === "string") return obj.item_title;
+    if (typeof obj.text === "string") return obj.text;
+  }
+  return "";
+}
+
+function getItemOrder(item: unknown): number {
+  if (item && typeof item === "object") {
+    const order = (item as Record<string, unknown>).item_order;
+    if (typeof order === "number") return order;
+  }
+  return Number.MAX_SAFE_INTEGER;
+}
+
+function renderItems(items: unknown, isOrdered: boolean): React.ReactNode {
   if (!Array.isArray(items) || items.length === 0) return null;
 
+  const list = isOrdered
+    ? [...items].sort((a, b) => getItemOrder(a) - getItemOrder(b))
+    : items;
+
   return (
-    <ol className="mt-2 space-y-2">
-      {items.map((item, idx) => {
-        const text =
-          typeof item === "string"
-            ? item
-            : item && typeof item === "object" && "text" in item
-              ? String((item as { text: unknown }).text)
-              : JSON.stringify(item);
-        return (
-          <li
-            key={idx}
-            className="flex gap-3 px-3 py-2 rounded-lg bg-gray-50 text-sm"
-          >
-            <span className="text-gray-400 shrink-0">{idx + 1}</span>
-            <span className="whitespace-pre-wrap break-words">{text}</span>
-          </li>
-        );
-      })}
-    </ol>
+    <ListTag className="mt-2 space-y-2" isOrdered={isOrdered}>
+      {list.map((item, idx) => (
+        <li
+          key={idx}
+          className="flex gap-3 px-3 py-2 rounded-lg bg-gray-50 text-sm"
+        >
+          <span className="text-gray-400 shrink-0">
+            {isOrdered ? idx + 1 : "•"}
+          </span>
+          <span className="whitespace-pre-wrap break-words">
+            {getItemText(item)}
+          </span>
+        </li>
+      ))}
+    </ListTag>
+  );
+}
+
+function ListTag({
+  isOrdered,
+  className,
+  children,
+}: {
+  isOrdered: boolean;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return isOrdered ? (
+    <ol className={className}>{children}</ol>
+  ) : (
+    <ul className={className}>{children}</ul>
   );
 }
 
@@ -127,7 +161,7 @@ export default async function SelectionDetailPage({ params }: Params) {
           </ul>
         )}
 
-        {renderItems(selection.items)}
+        {renderItems(selection.items, selection.is_ordered)}
 
         {selection.link && (
           <a
